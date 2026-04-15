@@ -7,6 +7,9 @@ connectDB();
 
 const app = express();
 
+const postRoutes = require('./routes/postRoutes');
+app.use('/api/posts', postRoutes);
+
 app.use(cors());
 app.use(express.json());
 
