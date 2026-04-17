@@ -1,55 +1,26 @@
-import { useEffect, useState } from "react";
-import API from "./services/api";
+import { Routes, Route } from 'react-router-dom'
+import Navbar from './components/Navbar'
+import Home from './pages/Home'
+import PostDetail from './pages/PostDetail'
+import CreatePost from './pages/CreatePost'
+import EditPost from './pages/EditPost'
 
 function App() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    API.get("/posts")
-      .then((res) => setPosts(res.data))
-      .catch((err) => console.log(err));
-  }, []);
-
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    await API.post("/posts", { title, content });
-
-    window.location.reload();
-  };
-
   return (
-    <div>
-      <h1>Blog Platform</h1>
-
-      {posts.map((post) => (
-        <div key={post._id}>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-        </div>
-      ))}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-
-        <textarea
-          placeholder="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-
-        <button type="submit">Create Post</button>
-      </form>
+    <div className="min-h-screen bg-[#6b7280] flex justify-center items-start py-8 px-4">
+      <div className="w-full max-w-[1200px] bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <Navbar />
+        <main className="px-8 pb-8">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/post/:id" element={<PostDetail />} />
+            <Route path="/create" element={<CreatePost />} />
+            <Route path="/edit/:id" element={<EditPost />} />
+          </Routes>
+        </main>
+      </div>
     </div>
-    
-  );
+  )
 }
 
-export default App;
+export default App
