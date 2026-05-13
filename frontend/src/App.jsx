@@ -1,26 +1,51 @@
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import PostDetail from './pages/PostDetail'
-import CreatePost from './pages/CreatePost'
-import EditPost from './pages/EditPost'
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
+import BlogPage from './pages/BlogPage';
+import PostDetailPage from './pages/PostDetailPage';
+import AboutPage from './pages/AboutPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/admin/DashboardPage';
+import PostEditorPage from './pages/admin/PostEditorPage';
 
-function App() {
+function NotFound() {
   return (
-    <div className="min-h-screen bg-[#6b7280] flex justify-center items-start py-8 px-4">
-      <div className="w-full max-w-[1200px] bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <Navbar />
-        <main className="px-8 pb-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/post/:id" element={<PostDetail />} />
-            <Route path="/create" element={<CreatePost />} />
-            <Route path="/edit/:id" element={<EditPost />} />
-          </Routes>
-        </main>
-      </div>
+    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
+      <h1 className="font-display text-6xl font-normal text-[var(--color-text)]">404</h1>
+      <p className="text-[var(--color-text-muted)]">Page introuvable</p>
+      <a href="/" className="text-sm text-[var(--color-text)] underline underline-offset-4">← Retour à l'accueil</a>
     </div>
-  )
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <div className="min-h-screen flex flex-col bg-[var(--color-bg)]">
+        <Navbar />
+        <div className="flex-1">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:id" element={<PostDetailPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/get-started" element={<RegisterPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard/new" element={<PostEditorPage />} />
+            <Route path="/dashboard/edit/:id" element={<PostEditorPage />} />
+            <Route path="/features" element={<NotFound />} />
+            <Route path="/contact" element={<NotFound />} />
+            <Route path="/demo" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        <Footer />
+      </div>
+    </AuthProvider>
+  );
+}
