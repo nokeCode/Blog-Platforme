@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { getPostById, updatePost } from '../utils/api'
 
 function EditPost() {
   const { id } = useParams()
@@ -15,16 +15,26 @@ function EditPost() {
   const categories = ['Business', 'Design', 'Technology', 'Lifestyle']
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/posts/${id}`)
-      .then(res => { setFormData(res.data); setLoading(false) })
-      .catch(() => setLoading(false))
+    const fetch = async () => {
+      try {
+        setLoading(true)
+        const data = await getPostById(id)
+        setFormData(data)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetch()
   }, [id])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
     try {
-      await axios.put(`http://localhost:5000/api/posts/${id}`, formData)
+      await updatePost(id, formData)
       navigate(`/post/${id}`)
     } catch (error) {
       alert('Erreur lors de la mise à jour')

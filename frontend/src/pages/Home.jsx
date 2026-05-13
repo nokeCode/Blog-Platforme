@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import HeroPost from '../components/HeroPost'
 import FeaturedPosts from '../components/FeaturePosts'
 import RecentPosts from '../components/RecentPosts'
+import {
+  getPosts,
+  getFeaturedPost,
+  getOtherFeatured,
+} from '../utils/api'
 
 function Home() {
   const [heroPost, setHeroPost] = useState(null)
@@ -16,17 +20,24 @@ function Home() {
 
   const fetchPosts = async () => {
     try {
-      const postsRes = await axios.get('http://localhost:5000/api/posts')
-      const allPosts = postsRes.data
+      const allPosts = await getPosts()
 
-      const heroRes = await axios.get('http://localhost:5000/api/posts/hero/featured')
-      setHeroPost(heroRes.data)
+      const heroRes = await getFeaturedPost()
+      setHeroPost(heroRes)
 
-      const featuredRes = await axios.get('http://localhost:5000/api/posts/featured/list')
-      setFeaturedPosts(featuredRes.data.filter(p => p._id !== heroRes.data?._id).slice(0, 5))
+      const featuredRes = await getOtherFeatured()
+      setFeaturedPosts(
+        featuredRes
+          .filter((p) => p._id !== heroRes?._id)
+          .slice(0, 5)
+      )
 
-      setRecentPosts(allPosts.filter(p => p._id !== heroRes.data?._id).slice(0, 3))
-      
+      setRecentPosts(
+        allPosts
+          .filter((p) => p._id !== heroRes?._id)
+          .slice(0, 3)
+      )
+
       setLoading(false)
     } catch (error) {
       console.error('Erreur:', error)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { createPost } from '../utils/api'
 
 function CreatePost() {
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ function CreatePost() {
     e.preventDefault()
     setSubmitting(true)
     try {
-      await axios.post('http://localhost:5000/api/posts', formData)
+      await createPost(formData)
       navigate('/')
     } catch (error) {
       alert('Erreur lors de la création')

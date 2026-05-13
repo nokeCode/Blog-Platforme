@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import axios from 'axios'
 import { ArrowLeft, Edit, Trash2, Clock, User } from 'lucide-react'
+import { getPostById, deletePost } from '../utils/api'
 
 function PostDetail() {
   const { id } = useParams()
@@ -15,8 +15,8 @@ function PostDetail() {
 
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/posts/${id}`)
-      setPost(res.data)
+      const data = await getPostById(id)
+      setPost(data)
       setLoading(false)
     } catch (error) {
       console.error('Erreur:', error)
@@ -27,7 +27,7 @@ function PostDetail() {
   const handleDelete = async () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce post ?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/posts/${id}`)
+        await deletePost(id)
         navigate('/')
       } catch (error) {
         console.error('Erreur:', error)
