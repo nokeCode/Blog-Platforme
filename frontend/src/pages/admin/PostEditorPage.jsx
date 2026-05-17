@@ -95,7 +95,7 @@ export default function PostEditorPage() {
   }
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-10 animate-fade-up stagger-1">
+    <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fade-up stagger-1">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <button

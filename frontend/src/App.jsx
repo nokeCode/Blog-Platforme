@@ -24,9 +24,9 @@ function NotFound() {
 export default function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-[var(--color-bg)]">
+      <div className="w-full min-h-screen flex flex-col bg-[var(--color-bg)]">
         <Navbar />
-        <div className="flex-1">
+        <div className="flex-1 pt-16">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/blog" element={<BlogPage />} />

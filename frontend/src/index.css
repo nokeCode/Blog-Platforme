@@ -27,6 +27,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
 .font-display {
   font-family: var(--font-display);
 }
@@ -73,3 +86,24 @@ body {
 .stagger-3 { animation-delay: 0.15s; opacity: 0; }
 .stagger-4 { animation-delay: 0.2s; opacity: 0; }
 .stagger-5 { animation-delay: 0.25s; opacity: 0; }
+
+/* PostDetail: make injected HTML (dangerouslySetInnerHTML) responsive and prevent overflow */
+.post-detail-prose {
+  overflow-x: hidden;
+}
+
+.post-detail-prose img,
+.post-detail-prose iframe,
+.post-detail-prose table {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-detail-prose iframe {
+  width: 100%;
+}
+
+.post-detail-prose table {
+  display: block;
+  overflow-x: auto;
+}

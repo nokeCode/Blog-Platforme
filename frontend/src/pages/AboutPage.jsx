@@ -1,6 +1,6 @@
 export default function AboutPage() {
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16 animate-fade-up stagger-1">
+    <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-fade-up stagger-1">
       <span className="inline-block text-xs font-medium text-[var(--color-text-muted)] bg-[var(--color-bg)] border border-[var(--color-border)] px-3 py-1 rounded-full mb-6">
         About us
       </span>

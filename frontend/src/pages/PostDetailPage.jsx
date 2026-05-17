@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, User } from 'lucide-react';
@@ -34,7 +35,7 @@ export default function PostDetailPage() {
   }
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-10 animate-fade-in">
+    <main className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 animate-fade-in">
       {/* Back */}
       <Link
         to="/blog"
@@ -84,18 +85,12 @@ export default function PostDetailPage() {
       )}
 
       {/* Content */}
-      <div className="prose prose-sm max-w-none text-[var(--color-text)] leading-relaxed">
+      <div className="post-detail-prose prose prose-sm max-w-none text-[var(--color-text)] leading-relaxed overflow-x-hidden">
         {post.content ? (
           <div dangerouslySetInnerHTML={{ __html: post.content }} />
         ) : (
-          <div className="space-y-4 text-[15px]">
-            <p>{post.excerpt || 'Full content coming soon. Stay tuned for updates!'}</p>
-            <p className="text-[var(--color-text-muted)]">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </p>
-            <p className="text-[var(--color-text-muted)]">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+          <div className="space-y-2 text-[15px]">
+            <p>{post.excerpt || 'Contenu indisponible pour cet article.'}</p>
           </div>
         )}
       </div>

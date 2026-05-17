@@ -25,7 +25,7 @@ export default function BlogPage() {
   });
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
+    <main className="w-full  mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
       <div className="mb-8 animate-fade-up stagger-1">
         <h1 className="font-display text-4xl font-normal text-[var(--color-text)] mb-2">All Posts</h1>

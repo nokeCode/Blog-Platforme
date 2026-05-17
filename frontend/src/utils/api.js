@@ -11,30 +11,45 @@ const api = axios.create({
   timeout: 8000,
 });
 
-// Helper: try real API, fall back to mock
-async function safeFetch(apiFn, mockData) {
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+
+// Helper: try real API, optionally fall back to mock
+async function safeFetch(apiFn, { mockData, fallback }) {
   try {
     const res = await apiFn();
+
+    // Backend renvoie souvent: { success: true, data: ... }
+    if (res?.data?.data !== undefined) return res.data.data;
+
+    // Compat: si l'API renvoie directement la valeur
     return res.data;
-  } catch {
-    return mockData;
+  } catch (err) {
+    if (USE_MOCK) {
+      console.log('Using mock data for:', apiFn.name || 'unknown');
+      return mockData;
+    }
+    console.warn('API error (mock disabled):', apiFn.name || 'unknown', err?.message || err);
+    return fallback;
   }
 }
 
 export const getPosts = () =>
-  safeFetch(() => api.get('/posts'), MOCK_ALL_POSTS);
+  safeFetch(() => api.get('/posts'), { mockData: MOCK_ALL_POSTS, fallback: [] });
 
 export const getFeaturedPost = () =>
-  safeFetch(() => api.get('/posts/featured'), MOCK_FEATURED_POST);
+  safeFetch(() => api.get('/posts/featured'), { mockData: MOCK_FEATURED_POST, fallback: null });
 
 export const getOtherFeatured = () =>
-  safeFetch(() => api.get('/posts/featured/others'), MOCK_OTHER_FEATURED);
+  safeFetch(() => api.get('/posts/featured/others'), { mockData: MOCK_OTHER_FEATURED, fallback: [] });
 
 export const getRecentPosts = () =>
-  safeFetch(() => api.get('/posts/recent'), MOCK_RECENT_POSTS);
+  safeFetch(() => api.get('/posts/recent'), { mockData: MOCK_RECENT_POSTS, fallback: [] });
 
 export const getPostById = (id) =>
-  safeFetch(() => api.get(`/posts/${id}`), MOCK_ALL_POSTS.find((p) => p._id === id));
+  safeFetch(() => api.get(`/posts/${id}`), {
+    mockData: MOCK_ALL_POSTS.find((p) => p._id === id) || null,
+    fallback: null,
+  });
 
 export const createPost = (data) => api.post('/posts', data);
 export const updatePost = (id, data) => api.put(`/posts/${id}`, data);
