@@ -60,9 +60,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
+    <div className="flex min-h-full w-full">
       {/* Section Image - Gauche */}
-      <div className="hidden lg:block lg:w-1/2 relative">
+      <div className="hidden lg:block lg:w-1/2 relative min-h-full">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 to-purple-700/90 z-10"></div>
         <img 
           src="https://images.unsplash.com/photo-1551434678-e076c2236a9a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
@@ -89,8 +89,8 @@ const LoginPage = () => {
       </div>
 
       {/* Section Formulaire - Droite */}
-      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 overflow-y-auto">
-        <div className="w-full max-w-md px-8 py-12">
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 overflow-y-auto min-h-full">
+        <div className="w-full max-w-md px-8 py-16">
           {/* Logo et en-tête */}
           <div className="text-center mb-8 lg:text-left">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-4 lg:mx-0 mx-auto">

@@ -30,7 +30,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
+    <main className="w-full min-h-full flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
       <div className="w-full max-w-sm animate-fade-up stagger-1">
         <div className="flex items-center gap-2 mb-8">
           <div className="w-8 h-8 bg-[var(--color-accent)] rounded-lg flex items-center justify-center">

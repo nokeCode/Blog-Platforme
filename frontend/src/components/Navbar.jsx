@@ -254,7 +254,7 @@ export default function Navbar() {
         }`}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7.5xl mx-auto flex items-center justify-between h-16 gap-8">
+          <div className="mx-auto flex items-center justify-between h-16 gap-8">
             <Brand />
 
             <DesktopNavLinks />
