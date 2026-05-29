@@ -1,106 +1,89 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
-import { ArrowLeft, Edit, Trash2, Clock, User } from 'lucide-react'
-import { getPostById, deletePost } from '../utils/api'
+import { useParams, Link } from 'react-router-dom';
+import { Button } from '../components/ui/Buttom';
 
-function PostDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [post, setPost] = useState(null)
-  const [loading, setLoading] = useState(true)
+const mockPost = {
+  id: 1,
+  title: 'Unlocking Business Efficiency with SaaS Solutions',
+  category: 'Business',
+  image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1200&h=600&fit=crop',
+  content: `
+    <p>In today's rapidly evolving digital landscape, businesses are constantly seeking ways to streamline operations and maximize productivity. Software as a Service (SaaS) solutions have emerged as a game-changing approach to achieving these goals.</p>
+    
+    <h3>The Rise of SaaS</h3>
+    <p>The SaaS model has transformed how organizations access and utilize software. Instead of purchasing and maintaining expensive on-premise infrastructure, companies can now leverage cloud-based solutions that offer scalability, flexibility, and cost-effectiveness.</p>
+    
+    <h3>Key Benefits</h3>
+    <ul>
+      <li>Reduced upfront costs</li>
+      <li>Automatic updates and maintenance</li>
+      <li>Enhanced collaboration capabilities</li>
+      <li>Improved data security</li>
+    </ul>
+    
+    <p>By embracing SaaS solutions, businesses can focus on their core competencies while leaving the technical complexities to specialized providers.</p>
+  `,
+  author: 'Jennifer Taylor',
+  authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face',
+  date: 'May 15, 2026',
+  readTime: '8 min read',
+};
 
-  useEffect(() => {
-    fetchPost()
-  }, [id])
-
-  const fetchPost = async () => {
-    try {
-      const data = await getPostById(id)
-      setPost(data)
-      setLoading(false)
-    } catch (error) {
-      console.error('Erreur:', error)
-      setLoading(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce post ?')) {
-      try {
-        await deletePost(id)
-        navigate('/')
-      } catch (error) {
-        console.error('Erreur:', error)
-      }
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-      </div>
-    )
-  }
-
-  if (!post) {
-    return (
-      <div className="text-center py-20">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Post non trouvé</h2>
-        <Link to="/" className="text-blue-600 hover:underline">
-          Retour à l'accueil
-        </Link>
-      </div>
-    )
-  }
+export const PostDetail = () => {
+  const { id } = useParams();
 
   return (
-    <div className="max-w-4xl mx-auto py-8">
-      <div className="flex items-center justify-between mb-8">
-        <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900">
-          <ArrowLeft className="w-5 h-5" />
-          Retour
-        </Link>
-        <div className="flex gap-3">
-          <Link to={`/edit/${id}`} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
-            <Edit className="w-4 h-4" />
-            Modifier
-          </Link>
-          <button onClick={handleDelete} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
-            <Trash2 className="w-4 h-4" />
-            Supprimer
-          </button>
+    <div className="min-h-screen bg-white">
+      {/* Hero Image */}
+      <div className="relative h-[400px] md:h-[500px]">
+        <img
+          src={mockPost.image}
+          alt={mockPost.title}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 max-w-4xl mx-auto px-4 sm:px-6 pb-12">
+          <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-sm font-medium rounded-full mb-4 border border-white/30">
+            {mockPost.category}
+          </span>
+          <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+            {mockPost.title}
+          </h1>
         </div>
       </div>
 
-      <span className="inline-block px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full mb-4">
-        {post.category}
-      </span>
-
-      <h1 className="text-4xl font-bold text-gray-900 mb-6">{post.title}</h1>
-
-      <div className="flex items-center gap-6 mb-8 text-sm text-gray-600">
-        <div className="flex items-center gap-2">
-          <User className="w-4 h-4" />
-          {post.author.name}
+      {/* Content */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+        {/* Author Info */}
+        <div className="flex items-center gap-4 pb-8 mb-8 border-b border-gray-100">
+          <img
+            src={mockPost.authorAvatar}
+            alt={mockPost.author}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div>
+            <p className="font-semibold text-gray-900">{mockPost.author}</p>
+            <p className="text-sm text-gray-500">
+              {mockPost.date} · {mockPost.readTime}
+            </p>
+          </div>
+          <div className="ml-auto flex gap-3">
+            <Link to={`/edit/${id}`}>
+              <Button variant="outline" size="sm">Edit</Button>
+            </Link>
+            <Link to={`/delete/${id}`}>
+              <Button variant="outline" size="sm" className="text-red-600 border-red-200 hover:bg-red-50">
+                Delete
+              </Button>
+            </Link>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4" />
-          {post.readTime}
-        </div>
-        <span>{new Date(post.createdAt).toLocaleDateString('fr-FR')}</span>
-      </div>
 
-      <div className="rounded-2xl overflow-hidden mb-8">
-        <img src={post.image} alt={post.title} className="w-full aspect-[21/9] object-cover" />
-      </div>
-
-      <div className="prose prose-lg max-w-none">
-        <p className="text-xl text-gray-600 mb-6">{post.excerpt}</p>
-        <div className="text-gray-800 whitespace-pre-line">{post.content}</div>
+        {/* Article Content */}
+        <article
+          className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600"
+          dangerouslySetInnerHTML={{ __html: mockPost.content }}
+        />
       </div>
     </div>
-  )
-}
-
-export default PostDetail
+  );
+};

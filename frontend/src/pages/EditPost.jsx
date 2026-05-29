@@ -1,116 +1,127 @@
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { getPostById, updatePost } from '../utils/api'
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button } from '../components/ui/Buttom';
 
-function EditPost() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+// Données mockées pour la démo
+const mockPosts = [
+  {
+    id: '1',
+    title: 'Unlocking Business Efficiency with SaaS Solutions',
+    category: 'Business',
+    excerpt: 'Discover how SaaS solutions can transform your business operations.',
+    content: 'Full content here...',
+    image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=800&h=500&fit=crop',
+  },
+];
+
+export const EditPost = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    title: '', category: 'Business', content: '', excerpt: '', image: '',
-    author: { name: '', avatar: '' }, readTime: '', featured: false
-  })
-  const [loading, setLoading] = useState(true)
-  const [submitting, setSubmitting] = useState(false)
-
-  const categories = ['Business', 'Design', 'Technology', 'Lifestyle']
+    title: '',
+    category: '',
+    excerpt: '',
+    content: '',
+    image: '',
+  });
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        setLoading(true)
-        const data = await getPostById(id)
-        setFormData(data)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+    // TODO: Fetch post from API
+    const post = mockPosts.find((p) => p.id === id);
+    if (post) {
+      setFormData(post);
     }
+  }, [id]);
 
-    fetch()
-  }, [id])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setSubmitting(true)
-    try {
-      await updatePost(id, formData)
-      navigate(`/post/${id}`)
-    } catch (error) {
-      alert('Erreur lors de la mise à jour')
-    } finally {
-      setSubmitting(false)
-    }
-  }
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    if (name === 'authorName') {
-      setFormData(prev => ({ ...prev, author: { ...prev.author, name: value } }))
-    } else {
-      setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-    }
-  }
-
-  if (loading) return <div className="flex justify-center py-20"><div className="animate-spin h-12 w-12 border-b-2 border-gray-900"></div></div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // TODO: Appel API pour mettre à jour
+    console.log('Updating post:', formData);
+    navigate('/');
+  };
 
   return (
-    <div className="max-w-3xl mx-auto py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Modifier le post</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Titre</label>
-          <input type="text" name="title" value={formData.title} onChange={handleChange} required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
-          <select name="category" value={formData.category} onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none">
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">URL de l'image</label>
-          <input type="url" name="image" value={formData.image} onChange={handleChange} required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Extrait</label>
-          <textarea name="excerpt" value={formData.excerpt} onChange={handleChange} required rows={3}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none resize-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Contenu</label>
-          <textarea name="content" value={formData.content} onChange={handleChange} required rows={10}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none resize-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Auteur</label>
-          <input type="text" name="authorName" value={formData.author?.name || ''} onChange={handleChange} required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Temps de lecture</label>
-          <input type="text" name="readTime" value={formData.readTime} onChange={handleChange} required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black outline-none" />
-        </div>
-        <div className="flex items-center gap-3">
-          <input type="checkbox" name="featured" id="featured" checked={formData.featured} onChange={handleChange}
-            className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black" />
-          <label htmlFor="featured" className="text-sm font-medium text-gray-700">Mettre en vedette</label>
-        </div>
-        <div className="flex gap-4 pt-4">
-          <button type="button" onClick={() => navigate(`/post/${id}`)}
-            className="flex-1 px-6 py-3 text-sm font-medium text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">Annuler</button>
-          <button type="submit" disabled={submitting}
-            className="flex-1 px-6 py-3 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 disabled:opacity-50">
-            {submitting ? 'Mise à jour...' : 'Mettre à jour'}
-          </button>
-        </div>
-      </form>
-    </div>
-  )
-}
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Edit Post</h1>
+          <p className="text-gray-600 mb-8">Update your content</p>
 
-export default EditPost
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+              <input
+                type="text"
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <select
+                required
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all bg-white"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              >
+                <option value="Business">Business</option>
+                <option value="Design">Design</option>
+                <option value="Technology">Technology</option>
+                <option value="Productivity">Productivity</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+              <input
+                type="url"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>
+              <textarea
+                required
+                rows={2}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none"
+                value={formData.excerpt}
+                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+              <textarea
+                required
+                rows={10}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-y"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              />
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <Button type="submit" variant="primary" className="flex-1 justify-center py-3">
+                Save Changes
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex-1 justify-center py-3"
+                onClick={() => navigate('/')}
+              >
+                Cancel
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
