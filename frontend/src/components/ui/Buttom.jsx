@@ -9,6 +9,7 @@ export const Button = ({
     primary: 'bg-primary-600 text-white hover:bg-primary-700 shadow-lg shadow-primary-500/30',
     secondary: 'bg-white text-gray-900 hover:bg-gray-50 border border-gray-200 shadow-sm',
     ghost: 'bg-transparent text-gray-600 hover:text-primary-600 hover:bg-primary-50',
+    danger: 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-500/30',
     outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white',
   };
 
@@ -18,6 +19,7 @@ export const Button = ({
     lg: 'px-8 py-4 text-lg font-semibold',
   };
 
+
   return (
     <button
       className={`rounded-xl transition-all duration-300 active:scale-95 font-medium ${variants[variant]} ${sizes[size]} ${className}`}
@@ -25,5 +27,6 @@ export const Button = ({
     >
       {children}
     </button>
+    
   );
 };

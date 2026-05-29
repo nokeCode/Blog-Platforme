@@ -6,7 +6,7 @@ export default function PostCard({ post, index = 0 }) {
 
   return (
     <Link
-      to={`/blog/${post._id}`}
+      to={`/post/${post._id}`}
       className={`group block bg-white rounded-2xl overflow-hidden border border-[var(--color-border)] hover:shadow-md transition-all duration-300 animate-fade-up ${delay}`}
     >
       {/* Image */}

@@ -7,7 +7,7 @@ export default function FeaturedHero({ post, otherPosts = [] }) {
     <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 mb-12">
       {/* Main featured post */}
       <Link
-        to={`/blog/${post._id}`}
+        to={`/post/${post._id}`}
         className="group relative rounded-2xl overflow-hidden bg-gray-900 aspect-[4/3] lg:aspect-auto lg:min-h-[340px] block animate-fade-up stagger-1"
       >
         {post.image && (
@@ -40,7 +40,7 @@ export default function FeaturedHero({ post, otherPosts = [] }) {
           {otherPosts.map((item, i) => (
             <Link
               key={item._id}
-              to={`/blog/${item._id}`}
+              to={`/post/${item._id}`}
               className="flex items-center gap-3 p-2 rounded-xl hover:bg-[var(--color-bg)] transition-colors group"
             >
               <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-gray-100">
