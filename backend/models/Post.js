@@ -62,7 +62,7 @@ const postSchema = new mongoose.Schema(
 );
 
 // Auto-generate slug from title
-postSchema.pre('save', async function (next) {
+postSchema.pre('save', async function () {
   if (this.isModified('title') || !this.slug) {
     const slugModule = require('slug');
     const base = slugModule(this.title, { lower: true });
@@ -82,8 +82,6 @@ postSchema.pre('save', async function (next) {
     const minutes = Math.max(1, Math.round(words / 200));
     this.readTime = `${minutes} min read`;
   }
-
-  next();
 });
 
 // Virtual: populate author name for list views

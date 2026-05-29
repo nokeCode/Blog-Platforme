@@ -10,6 +10,9 @@ const generateToken = (id) =>
 // @route POST /api/auth/register
 // @access Public
 const register = asyncHandler(async (req, res) => {
+  console.log('DEBUG authController.register called, next arg present:', typeof arguments[2]);
+  console.log('DEBUG JWT_SECRET present:', !!process.env.JWT_SECRET);
+  console.log('DEBUG register body:', req.body);
   const { name, email, password } = req.body;
 
   const existing = await User.findOne({ email });

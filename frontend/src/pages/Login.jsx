@@ -1,15 +1,29 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Buttom';
+import { useAuth } from '../context/AuthContext';
 
 export const Login = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logique de connexion ici
-    console.log('Login:', formData);
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(formData.email, formData.password);
+      navigate('/blog');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible de se connecter');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -72,10 +86,15 @@ export const Login = () => {
               </div>
             </div>
 
-            <Button type="submit" variant="primary" className="w-full justify-center py-3">
-              Se connecter
+            <Button type="submit" variant="primary" className="w-full justify-center py-3" disabled={loading}>
+              {loading ? 'Connexion…' : 'Se connecter'}
             </Button>
           </form>
+          {error && (
+            <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">

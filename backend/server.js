@@ -28,14 +28,7 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { success: false, message: 'Trop de tentatives de connexion, réessayez dans 15 minutes.' },
-});
-
 app.use('/api', limiter);
-app.use('/api/auth', authLimiter);
 
 // ─── Routes ───────────────────────────────────────────────
 app.use('/api/auth', require('./routes/auth'));
