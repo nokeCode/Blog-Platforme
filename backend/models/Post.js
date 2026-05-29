@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
 
+const slugify = (text) =>
+  text
+    .toString()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
 const postSchema = new mongoose.Schema(
   {
     title: {
@@ -64,8 +74,7 @@ const postSchema = new mongoose.Schema(
 // Auto-generate slug from title
 postSchema.pre('save', async function () {
   if (this.isModified('title') || !this.slug) {
-    const slugModule = require('slug');
-    const base = slugModule(this.title, { lower: true });
+    const base = slugify(this.title);
     // Ensure uniqueness
     let candidate = base;
     let count = 0;
