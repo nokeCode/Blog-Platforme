@@ -6,6 +6,7 @@ const {
   getOtherFeatured,
   getRecentPosts,
   getPostById,
+  getMyPosts,
   createPost,
   updatePost,
   deletePost,
@@ -18,6 +19,7 @@ router.get('/', getPosts);
 router.get('/featured', getFeaturedPost);
 router.get('/featured/others', getOtherFeatured);
 router.get('/recent', getRecentPosts);
+router.get('/me', protect, getMyPosts);
 router.get('/:id', getPostById);
 
 // ─── Protected routes ─────────────────────────────────────

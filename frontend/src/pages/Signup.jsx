@@ -54,7 +54,7 @@ export const Signup = () => {
                 type="text"
                 required
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
-                placeholder="Jean Dupont"
+                placeholder="Nom et prénom"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />

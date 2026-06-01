@@ -115,11 +115,22 @@ const getPostById = asyncHandler(async (req, res) => {
   res.json({ success: true, data: post });
 });
 
+// @desc  Get posts authored by current user
+// @route GET /api/posts/me
+// @access Private
+const getMyPosts = asyncHandler(async (req, res) => {
+  const posts = await Post.find({ author: req.user._id })
+    .populate('author', AUTHOR_SELECT)
+    .sort('-createdAt');
+
+  res.json({ success: true, data: posts });
+});
+
 // @desc  Create post
 // @route POST /api/posts
 // @access Private (author, admin)
 const createPost = asyncHandler(async (req, res) => {
-  const { title, excerpt, content, category, tags, isFeatured, published } = req.body;
+  const { title, excerpt, content, category, tags, isFeatured, published, image } = req.body;
 
   const postData = {
     title,
@@ -130,6 +141,7 @@ const createPost = asyncHandler(async (req, res) => {
     isFeatured: isFeatured === 'true' || isFeatured === true,
     published: published !== 'false' && published !== false,
     author: req.user._id,
+    image: image || '',
   };
 
   // Handle image upload (from Cloudinary via multer)
@@ -159,7 +171,7 @@ const updatePost = asyncHandler(async (req, res) => {
     return res.status(403).json({ success: false, message: 'Non autorisé' });
   }
 
-  const { title, excerpt, content, category, tags, isFeatured, published } = req.body;
+  const { title, excerpt, content, category, tags, isFeatured, published, image } = req.body;
 
   if (title) post.title = title;
   if (excerpt !== undefined) post.excerpt = excerpt;
@@ -168,6 +180,7 @@ const updatePost = asyncHandler(async (req, res) => {
   if (tags) post.tags = Array.isArray(tags) ? tags : tags.split(',').map((t) => t.trim());
   if (isFeatured !== undefined) post.isFeatured = isFeatured === 'true' || isFeatured === true;
   if (published !== undefined) post.published = published !== 'false' && published !== false;
+  if (image !== undefined && image !== '') post.image = image;
 
   // Handle new image upload
   if (req.file) {
@@ -215,6 +228,7 @@ module.exports = {
   getOtherFeatured,
   getRecentPosts,
   getPostById,
+  getMyPosts,
   createPost,
   updatePost,
   deletePost,

@@ -7,6 +7,7 @@ import { Signup } from './pages/Signup';
 import { CreatePost } from './pages/CreatePost';
 import { EditPost } from './pages/EditPost';
 import { DeletePost } from './pages/DeletePost';
+import { Dashboard } from './pages/Dashboard';
 import PostDetailPage from './pages/PostDetailPage';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/create" element={<CreatePost />} />
           <Route path="/edit/:id" element={<EditPost />} />
           <Route path="/delete/:id" element={<DeletePost />} />

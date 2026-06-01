@@ -51,6 +51,7 @@ export const getPostById = (id) =>
     fallback: null,
   });
 
+export const getMyPosts = () => api.get('/posts/me');
 export const createPost = (data) => api.post('/posts', data);
 export const updatePost = (id, data) => api.put(`/posts/${id}`, data);
 export const deletePost = (id) => api.delete(`/posts/${id}`);

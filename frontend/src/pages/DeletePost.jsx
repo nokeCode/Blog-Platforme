@@ -1,14 +1,33 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../components/ui/Buttom';
+import { deletePost } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 export const DeletePost = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { isAuth, loading } = useAuth();
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleDelete = () => {
-    // TODO: Appel API pour supprimer
-    console.log('Deleting post:', id);
-    navigate('/');
+  useEffect(() => {
+    if (!loading && !isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth, loading, navigate]);
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    setError('');
+    try {
+      await deletePost(id);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible de supprimer le post.');
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -25,22 +44,28 @@ export const DeletePost = () => {
           Are you sure you want to delete this post? This action cannot be undone.
         </p>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-4">
           <Button
             variant="secondary"
-            className="flex-1 justify-center py-3"
-            onClick={() => navigate('/')}
+            className="w-full justify-center py-3"
+            onClick={() => navigate('/dashboard')}
           >
-            Cancel
+            Annuler
           </Button>
           <Button
             variant="primary"
-            className="flex-1 justify-center py-3 bg-red-600 hover:bg-red-700 shadow-red-500/30"
+            className="w-full justify-center py-3 bg-red-600 hover:bg-red-700 shadow-red-500/30"
             onClick={handleDelete}
+            disabled={deleting}
           >
-            Delete
+            {deleting ? 'Suppression…' : 'Supprimer'}
           </Button>
         </div>
+        {error && (
+          <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );

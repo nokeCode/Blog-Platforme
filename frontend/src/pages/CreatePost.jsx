@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Buttom';
+import { createPost } from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 
 export const CreatePost = () => {
   const navigate = useNavigate();
+  const { isAuth, loading } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     category: '',
@@ -11,12 +14,28 @@ export const CreatePost = () => {
     content: '',
     image: '',
   });
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!loading && !isAuth) {
+      navigate('/login');
+    }
+  }, [isAuth, loading, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Appel API pour créer le post
-    console.log('Creating post:', formData);
-    navigate('/');
+    setSaving(true);
+    setError('');
+
+    try {
+      await createPost(formData);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Impossible de créer le post.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -90,20 +109,25 @@ export const CreatePost = () => {
               />
             </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button type="submit" variant="primary" className="flex-1 justify-center py-3">
-                Publish Post
+            <div className="flex gap-4 pt-4 flex-col sm:flex-row">
+              <Button type="submit" variant="primary" className="flex-1 justify-center py-3" disabled={saving}>
+                {saving ? 'Publication…' : 'Publier l’article'}
               </Button>
               <Button
                 type="button"
                 variant="secondary"
                 className="flex-1 justify-center py-3"
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/dashboard')}
               >
-                Cancel
+                Annuler
               </Button>
             </div>
           </form>
+          {error && (
+            <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+              {error}
+            </div>
+          )}
         </div>
       </div>
     </div>
