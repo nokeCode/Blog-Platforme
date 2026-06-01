@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Buttom';
 import { createPost } from '../utils/api';
@@ -15,6 +15,8 @@ export const CreatePost = () => {
     image: '',
     imageFile: null,
   });
+  const [previewSrc, setPreviewSrc] = useState('');
+  const previewUrlRef = useRef('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -23,6 +25,14 @@ export const CreatePost = () => {
       navigate('/login');
     }
   }, [isAuth, loading, navigate]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current);
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,7 +103,13 @@ export const CreatePost = () => {
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
                 placeholder="https://example.com/image.jpg"
                 value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  if (!formData.imageFile) {
+                    setPreviewSrc(url);
+                  }
+                  setFormData({ ...formData, image: url });
+                }}
               />
             </div>
 
@@ -103,12 +119,36 @@ export const CreatePost = () => {
                 type="file"
                 accept="image/*"
                 className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
-                onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] || null })}
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  if (previewUrlRef.current) {
+                    URL.revokeObjectURL(previewUrlRef.current);
+                    previewUrlRef.current = '';
+                  }
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    previewUrlRef.current = url;
+                    setPreviewSrc(url);
+                  } else if (formData.image.trim()) {
+                    setPreviewSrc(formData.image.trim());
+                  } else {
+                    setPreviewSrc('');
+                  }
+                  setFormData({ ...formData, imageFile: file });
+                }}
               />
               {formData.imageFile && (
                 <p className="mt-2 text-sm text-gray-500">Fichier sélectionné : {formData.imageFile.name}</p>
               )}
             </div>
+            {(previewSrc || formData.image) && (
+              <div className="rounded-3xl border border-gray-200 bg-gray-50 p-4">
+                <p className="text-sm font-medium text-gray-700 mb-3">Aperçu de l’image</p>
+                <div className="h-56 overflow-hidden rounded-3xl bg-white shadow-sm">
+                  <img src={previewSrc || formData.image} alt="Aperçu" className="h-full w-full object-cover" />
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Excerpt</label>

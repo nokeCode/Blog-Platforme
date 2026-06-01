@@ -105,13 +105,24 @@ export const Dashboard = () => {
             <div className="grid gap-4">
               {posts.map((post) => (
                 <article key={post._id} className="rounded-3xl border border-gray-200 p-5 hover:shadow-lg transition-shadow duration-200">
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-[var(--color-text-muted)]">{post.category || 'Sans catégorie'}</p>
-                      <Link to={`/post/${post._id}`} className="text-xl font-semibold text-gray-900 hover:text-[var(--color-accent)] transition-colors block truncate">
-                        {post.title}
-                      </Link>
-                      <p className="mt-3 text-sm leading-6 text-gray-600 line-clamp-3">{post.excerpt || 'Aucun extrait disponible.'}</p>
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div className="flex items-start gap-4 min-w-0 flex-1">
+                      <div className="h-24 w-24 shrink-0 overflow-hidden rounded-3xl bg-gray-100 border border-gray-200">
+                        {post.image ? (
+                          <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.18em] text-gray-400">
+                            aucun visuel
+                          </div>
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-[var(--color-text-muted)]">{post.category || 'Sans catégorie'}</p>
+                        <Link to={`/post/${post._id}`} className="text-xl font-semibold text-gray-900 hover:text-[var(--color-accent)] transition-colors block truncate">
+                          {post.title}
+                        </Link>
+                        <p className="mt-3 text-sm leading-6 text-gray-600 line-clamp-3">{post.excerpt || 'Aucun extrait disponible.'}</p>
+                      </div>
                     </div>
                     <div className="flex flex-col gap-3 sm:items-end">
                       <span className="text-xs uppercase tracking-[0.2em] text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</span>
