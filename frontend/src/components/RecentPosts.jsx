@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import PostCard from './PostCard'
 
-function RecentPosts({ posts }) {
+function RecentPosts({ posts, layout = 'grid' }) {
   return (
     <div className="mt-12">
       <div className="flex items-center justify-between mb-8">
@@ -14,11 +14,20 @@ function RecentPosts({ posts }) {
           All Posts
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
-          <PostCard key={post._id} post={post} />
-        ))}
-      </div>
+
+      {layout === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post, i) => (
+            <PostCard key={post._id} post={post} index={i} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          {posts.map((post, i) => (
+            <PostCard key={post._id} post={post} index={i} layout="horizontal" />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
