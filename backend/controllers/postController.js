@@ -132,6 +132,11 @@ const getMyPosts = asyncHandler(async (req, res) => {
 const createPost = asyncHandler(async (req, res) => {
   const { title, excerpt, content, category, tags, isFeatured, published, image } = req.body;
 
+  // Debug: log uploaded file info
+  if (req.file) {
+    console.log('Uploaded file info (create):', req.file);
+  }
+
   const postData = {
     title,
     excerpt,
@@ -146,8 +151,11 @@ const createPost = asyncHandler(async (req, res) => {
 
   // Handle image upload (from Cloudinary via multer)
   if (req.file) {
-    postData.image = req.file.path;
-    postData.imagePublicId = req.file.filename;
+    // multer-storage-cloudinary may return different fields depending on versions
+    const imageUrl = req.file.path || req.file.secure_url || req.file.url || '';
+    const publicId = req.file.filename || req.file.public_id || req.file.publicId || '';
+    postData.image = imageUrl || postData.image;
+    postData.imagePublicId = publicId || postData.imagePublicId;
   }
 
   const post = await Post.create(postData);
@@ -160,6 +168,9 @@ const createPost = asyncHandler(async (req, res) => {
 // @route PUT /api/posts/:id
 // @access Private (owner or admin)
 const updatePost = asyncHandler(async (req, res) => {
+  console.log('UpdatePost request body:', req.body);
+  console.log('UpdatePost req.file:', req.file);
+
   let post = await Post.findById(req.params.id);
 
   if (!post) {
@@ -184,12 +195,15 @@ const updatePost = asyncHandler(async (req, res) => {
 
   // Handle new image upload
   if (req.file) {
+    console.log('Uploaded file info (update):', req.file);
     // Delete old image from Cloudinary
     if (post.imagePublicId) {
       await cloudinary.uploader.destroy(post.imagePublicId).catch(() => {});
     }
-    post.image = req.file.path;
-    post.imagePublicId = req.file.filename;
+    const imageUrl = req.file.path || req.file.secure_url || req.file.url || '';
+    const publicId = req.file.filename || req.file.public_id || req.file.publicId || '';
+    post.image = imageUrl || post.image;
+    post.imagePublicId = publicId || post.imagePublicId;
   }
 
   await post.save();

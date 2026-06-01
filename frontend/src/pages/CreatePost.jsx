@@ -13,6 +13,7 @@ export const CreatePost = () => {
     excerpt: '',
     content: '',
     image: '',
+    imageFile: null,
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -28,8 +29,19 @@ export const CreatePost = () => {
     setSaving(true);
     setError('');
 
+    const payload = new FormData();
+    payload.append('title', formData.title);
+    payload.append('category', formData.category);
+    payload.append('excerpt', formData.excerpt);
+    payload.append('content', formData.content);
+    if (formData.imageFile) {
+      payload.append('image', formData.imageFile);
+    } else if (formData.image.trim()) {
+      payload.append('image', formData.image.trim());
+    }
+
     try {
-      await createPost(formData);
+      await createPost(payload);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Impossible de créer le post.');
@@ -75,14 +87,27 @@ export const CreatePost = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Image URL (optionnel)</label>
               <input
                 type="url"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://example.com/image.jpg"
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Image depuis votre machine</label>
+              <input
+                type="file"
+                accept="image/*"
+                className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] || null })}
+              />
+              {formData.imageFile && (
+                <p className="mt-2 text-sm text-gray-500">Fichier sélectionné : {formData.imageFile.name}</p>
+              )}
             </div>
 
             <div>

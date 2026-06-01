@@ -14,6 +14,7 @@ export const EditPost = () => {
     excerpt: '',
     content: '',
     image: '',
+    imageFile: null,
   });
   const [loadingPost, setLoadingPost] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -30,8 +31,7 @@ export const EditPost = () => {
       setLoadingPost(true);
       setError('');
       try {
-        const res = await getPostById(id);
-        const post = res?.data?.data;
+        const post = await getPostById(id);
         if (post) {
           setFormData({
             title: post.title || '',
@@ -39,9 +39,11 @@ export const EditPost = () => {
             excerpt: post.excerpt || '',
             content: post.content || '',
             image: post.image || '',
+            imageFile: null,
           });
         }
       } catch (err) {
+        console.error('EditPost fetch error:', err?.response?.data || err);
         setError(err.response?.data?.message || 'Impossible de charger l’article.');
       } finally {
         setLoadingPost(false);
@@ -56,11 +58,28 @@ export const EditPost = () => {
     setSaving(true);
     setError('');
 
+    const payload = new FormData();
+    payload.append('title', formData.title);
+    payload.append('category', formData.category);
+    payload.append('excerpt', formData.excerpt);
+    payload.append('content', formData.content);
+    if (formData.imageFile) {
+      payload.append('image', formData.imageFile);
+    } else if (formData.image.trim()) {
+      payload.append('image', formData.image.trim());
+    }
+
     try {
-      await updatePost(id, formData);
+      await updatePost(id, payload);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Impossible de mettre à jour l’article.');
+      console.error('EditPost submit error:', err?.response?.data || err);
+      setError(
+        err.response?.data?.message ||
+          (err.response?.data ? JSON.stringify(err.response.data) : null) ||
+          err.message ||
+          'Impossible de mettre à jour l’article.'
+      );
     } finally {
       setSaving(false);
     }
@@ -115,6 +134,19 @@ export const EditPost = () => {
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Image depuis votre machine</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+                  onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] || null })}
+                />
+                {formData.imageFile && (
+                  <p className="mt-2 text-sm text-gray-500">Fichier sélectionné : {formData.imageFile.name}</p>
+                )}
               </div>
 
               <div>
